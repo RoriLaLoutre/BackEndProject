@@ -1,0 +1,174 @@
+
+======================================================================================
+
+Contenu du fichier : .env
+
+======================================================================================
+PORT=3000
+
+#variable pour db postgres
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_NAME=backProject
+DB_USER=app
+DB_PASSWORD=app123
+
+#variable pour mongoDB
+MONGO_HOST=127.0.0.1
+MONGO_PORT=27017
+MONGO_NAME=admin
+MONGO_USER=mongoUser
+MONGO_PASSWORD=mongoPass
+======================================================================================
+
+Contenu du fichier : .gitignore
+
+======================================================================================
+# Node.js dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Coverage reports
+coverage/
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+======================================================================================
+
+Contenu du fichier : bruno\bruno.json
+
+======================================================================================
+{
+  "version": "1",
+  "name": "bruno",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
+======================================================================================
+
+Contenu du fichier : config\db.js
+
+======================================================================================
+import { Sequelize } from 'sequelize';
+import 'dotenv/config';
+
+export const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        dialect: 'postgres',
+        logging: false
+    }
+);
+======================================================================================
+
+Contenu du fichier : config\mongo.js
+
+======================================================================================
+import 'dotenv/config';
+
+export const mongoUri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_NAME}?authSource=admin`
+======================================================================================
+
+Contenu du fichier : docker-compose.yml
+
+======================================================================================
+services:
+  db:
+    image: postgres:16
+    container_name: backproject_db
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app123
+      POSTGRES_DB: backProject
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:7
+    container_name: backproject_mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoUser
+      MONGO_INITDB_ROOT_PASSWORD: mongoPass
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  db_data:
+  mongo_data:
+
+======================================================================================
+
+Contenu du fichier : server.js
+
+======================================================================================
+import { sequelize } from "./config/db.js";
+import mongoose from 'mongoose';
+import express from "express";
+import { mongoUri } from "./config/mongo.js";
+import 'dotenv/config';
+
+
+try {
+  await sequelize.authenticate();
+  console.log('Connection to postgreDB has been established successfully.');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
+
+try {
+  await mongoose.connect(mongoUri);
+  console.log('Connection to MongoDB has been established successfully.');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('test test');
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
