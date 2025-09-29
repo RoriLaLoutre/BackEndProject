@@ -6,10 +6,7 @@ export async function createRole({ roleName }) {
 }
 
 export async function getRoleById(id) {
-  if (!role) {
-    return null;
-  }
-  return await roleModel.findByPk(id);
+  return await roleModel.findByPk(id) || null
 }
 
 export async function updateRole(id, values) {

@@ -7,18 +7,18 @@ Contenu du fichier : .env
 PORT=3000
 
 #variable pour db postgres
-DB_HOST=127.0.0.1
+DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=backProject
 DB_USER=app
 DB_PASSWORD=app123
 
 #variable pour mongoDB
-MONGO_HOST=127.0.0.1
+MONGO_HOST=localhost
 MONGO_PORT=27017
 MONGO_NAME=admin
 MONGO_USER=mongoUser
-MONGO_PASSWORD=mongoPass
+MONGO_PASSWORD=mongoPass0
 ======================================================================================
 
 Contenu du fichier : .gitignore
@@ -61,7 +61,7 @@ coverage/
 .npm/
 
 # Optional eslint cache
-.eslintcache
+.eslintcache0
 ======================================================================================
 
 Contenu du fichier : bruno\bruno.json
@@ -75,7 +75,7 @@ Contenu du fichier : bruno\bruno.json
     "node_modules",
     ".git"
   ]
-}
+}0
 ======================================================================================
 
 Contenu du fichier : config\db.js
@@ -94,7 +94,7 @@ export const sequelize = new Sequelize(
         dialect: 'postgres',
         logging: false
     }
-);
+);0
 ======================================================================================
 
 Contenu du fichier : config\mongo.js
@@ -102,7 +102,7 @@ Contenu du fichier : config\mongo.js
 ======================================================================================
 import 'dotenv/config';
 
-export const mongoUri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_NAME}?authSource=admin`
+export const mongoUri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_NAME}?authSource=admin`0
 ======================================================================================
 
 Contenu du fichier : docker-compose.yml
@@ -135,7 +135,437 @@ services:
 volumes:
   db_data:
   mongo_data:
+0
+======================================================================================
 
+Contenu du fichier : middlewares\auth.js
+
+======================================================================================
+0
+======================================================================================
+
+Contenu du fichier : models\gameModel.js
+
+======================================================================================
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/db";
+
+const gameModel = sequelize.define("game", {
+    game_id: {
+        primaryKey: true,
+        type: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4, 
+    },
+    gameName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    gamesAgeLimit:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        unique:false,
+        defaultValue: 3
+    }
+    });
+
+export default gameModel;
+
+0
+======================================================================================
+
+Contenu du fichier : models\index.js
+
+======================================================================================
+import gameModel from "./gameModel";
+import roleModel from "./roleModel";
+import userModel from "./userModel";
+import userGameModel from "./userGameModel";
+import userRoleModel from "./userRoleModel";
+const associate = () => {
+  
+  roleModel.belongsToMany(userModel, {
+    through: userRoleModel,
+    foreignKey: "id_role",
+    as: "user"
+  });
+
+  userModel.belongsToMany(roleModel, {
+    through: userRoleModel,
+    foreignKey: "id_user",
+    as: "role"
+  });
+
+  gameModel.belongsToMany(userModel, {
+    through: userGameModel,
+    foreignKey: "id_game",
+    as: "user",
+  });
+
+  userModel.belongsToMany(gameModel, {
+    through: userGameModel,
+    foreignKey: "id_user",
+    as: "game",
+  });
+};
+
+export { associate };
+0
+======================================================================================
+
+Contenu du fichier : models\roleModel.js
+
+======================================================================================
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/db";
+
+const roleModel = sequelize.define("role", {
+    role_id: {
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+        autoIncrement: true
+    },
+    roleName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    }});
+
+export default roleModel;
+
+0
+======================================================================================
+
+Contenu du fichier : models\userGameConfigModel.js
+
+======================================================================================
+import mongoose from "mongoose";
+import { v4 } from "uuid";
+
+// Schéma des DLC
+const dlcSchema = new mongoose.Schema({
+  dlc_name: {
+    type: String,
+    required: true,
+  },
+  dlc_completion: {
+    type: String,
+    required: true,
+  },
+}, { _id: false });
+
+// Schéma principal
+const gameConfigSchema = new mongoose.Schema({
+  idConfig: {
+    type: String,
+    required: true, 
+    unique: true,
+    index: true,
+  },
+  screen_resolution: {
+    height: {
+      type: Number,
+      required: true,
+      default: 1080
+    },
+    width: {
+      type: Number,
+      required: true,
+      default: 1920
+    },
+  },
+  completion: {
+    type: String,
+    required: true,
+    default: "0%"
+  },
+  dlc_aquired: {
+    type: [dlcSchema],
+    default: [],
+  },
+  luminosity: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 100,
+    default:50
+  },
+  daltonian_mode: {
+    type: Boolean,
+    default: false,
+    allownull: true
+  },
+}, { _id: false, versionKey: false });
+
+const GameConfigModel = mongoose.model("GameConfig", gameConfigSchema);
+
+export default GameConfigModel;
+0
+======================================================================================
+
+Contenu du fichier : models\userGameModel.js
+
+======================================================================================
+import sequelize from "../config/database.js";
+import { DataTypes } from "sequelize";
+
+const userGameModel = sequelize.define("user_game", {
+    idConfig: { type: DataTypes.UUIDV4, primaryKey: true , allownull:false},
+    idUser: { type: DataTypes.UUIDV4, primaryKey: true , allownull:false },
+    idGame: { type: DataTypes.UUIDV4, primaryKey: true , allownull:false},
+}, { timestamps: false });
+
+export default userGameModel;
+0
+======================================================================================
+
+Contenu du fichier : models\userModel.js
+
+======================================================================================
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/db";
+
+const userModel = sequelize.define("user", {
+    user_id: {
+        primaryKey: true,
+        type: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4, 
+    },
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    birthDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    }});
+
+export default userModel;
+
+0
+======================================================================================
+
+Contenu du fichier : models\userRoleModel.js
+
+======================================================================================
+import sequelize from "../config/database.js";
+import { DataTypes } from "sequelize";
+
+const userRoleModel = sequelize.define("user_role", {
+  idRole: { type: DataTypes.INTEGER, primaryKey: true , allownull:false },
+  idUser: { type: DataTypes.UUIDV4, primaryKey: true , allownull:false},
+}, { timestamps: false });
+
+export default userRoleModel;
+0
+======================================================================================
+
+Contenu du fichier : repositories\gameRepository.js
+
+======================================================================================
+import gameModel from "../models/gameModel.js";
+
+export async function createGame({ gameName, gamesAgeLimit }) {
+  const game = await gameModel.create({ gameName, gamesAgeLimit });
+  return game;
+}
+
+export async function getGameById(id) {
+  return await gameModel.findByPk(id) || null;
+}
+
+export async function updateGame(id, values) {
+  const game = await getGameById(id);
+  if (!game) {
+    return null;
+  }
+  return await game.update(values);
+}
+
+export async function deleteGame(id) {
+  const game = await getGameById(id);
+  if (!game) {
+    return null;
+  }
+
+  return await game.destroy()
+}
+
+export async function getAllGames() {
+  return await gameModel.findAll();
+}
+
+export async function gameExists(gameName) {
+  const game = await gameModel.findOne({ where: { gameName } });
+  return Boolean(game);
+}
+
+0
+======================================================================================
+
+Contenu du fichier : repositories\roleRepository.js
+
+======================================================================================
+import roleModel from "../models/roleModel.js";
+
+export async function createRole({ roleName }) {
+  const role = await roleModel.create({ roleName });
+  return role;
+}
+
+export async function getRoleById(id) {
+  return await roleModel.findByPk(id) || null
+}
+
+export async function updateRole(id, values) {
+  const role = await getRoleById(id);
+  if (!role) {
+    return null;
+  }
+  return await role.update(values);
+}
+
+export async function deleteRole(id) {
+  const role = await getRoleById(id);
+  if (!role) {
+    return null;
+  }
+
+  return await role.destroy()
+}
+
+export async function getAllRoles() {
+  return await roleModel.findAll();
+}
+
+export async function roleExists(roleName) {
+  const role = await roleModel.findOne({ where: { roleName } });
+  return Boolean(role);
+}
+
+0
+======================================================================================
+
+Contenu du fichier : repositories\userGameConfigRepository.js
+
+======================================================================================
+import userGameConfigModel from "../models/userGameConfigModel.js"
+
+export async function CreateUserGameConfig(data) {
+  try {
+    if (!data.idConfig) {
+      throw new Error("idConfig est requis pour créer une GameConfig");
+    }
+
+    const newConfig = await userGameConfigModel.create(data);
+    return newConfig;
+  } catch (error) {
+    console.error("Erreur lors de la création d'une GameConfig :", error);
+    throw error;
+  }
+}
+0
+======================================================================================
+
+Contenu du fichier : repositories\userGameRepository.js
+
+======================================================================================
+import userGameModel from "../models/userGameModel.js"
+import userModel from "../models/userModel.js";
+import gameModel from "../models/gameModel.js";
+import { v4 as uuidv4 } from "uuid";
+import CreateUserGameConfig from "../repositories/userGameConfigRepository.js";
+
+
+export async function addGameToUser({ userId, gameId}){
+    const configId = uuidv4();
+    const gameModel = await userGameModel.create({idConfig: configId, idUser: userId , idGame: gameId})
+    const userGameConfig = await CreateUserGameConfig({configId})
+}
+
+
+export async function getUserGames(userId) {
+  return await gameModel.findAll({
+    include: {
+      model: userModel,
+      through: userGameModel,
+      where: { idUser: userId },
+      attributes: [],
+    },
+  });
+}0
+======================================================================================
+
+Contenu du fichier : repositories\userRepository.js
+
+======================================================================================
+import userModel from "../models/userModel.js";
+
+export async function createUser({ username, password, birthDate }) {
+  const user = await userModel.create({ username, password, birthDate });
+  return user;
+}
+
+export async function getUserById(id) {
+  return await userModel.findByPk(id) || null;
+}
+
+export async function updateUser(id, values) {
+  const user = await getUserById(id);
+  if (!user) {
+    return null;
+  }
+  return await user.update(values);
+}
+
+export async function deleteUser(id) {
+  const user = await getUserById(id);
+  if (!user) {
+    return null;
+  }
+
+  return await user.destroy()
+}
+
+export async function getAllUsers() {
+  return await userModel.findAll();
+}
+
+export async function userExists(username) {
+  const user = await userModel.findOne({ where: { username } });
+  return Boolean(user);
+}
+
+0
+======================================================================================
+
+Contenu du fichier : repositories\userRoleRepository.js
+
+======================================================================================
+import userRoleModel from "../models/userRoleModel.js"
+import userModel from "../models/userModel.js";
+import roleModel from "../models/roleModel.js";
+
+export async function addRoleToUser({roleId , userId}){
+    return await userRoleModel.create({idRole: roleId, idUser: userId})
+}
+
+
+export async function getUserRoles(userId) {
+  return await roleModel.findAll({
+    include: {
+      model: userModel,
+      through: userRoleModel,
+      where: { idUser: userId },
+      attributes: [],
+    },
+  });
+}0
 ======================================================================================
 
 Contenu du fichier : server.js
@@ -146,6 +576,9 @@ import mongoose from 'mongoose';
 import express from "express";
 import { mongoUri } from "./config/mongo.js";
 import 'dotenv/config';
+
+
+console.log('MongoDB URI:', mongoUri); // ← Ajoutez cette ligne
 
 
 try {
@@ -172,3 +605,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+0

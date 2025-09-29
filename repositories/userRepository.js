@@ -6,13 +6,10 @@ export async function createUser({ username, password, birthDate }) {
 }
 
 export async function getUserById(id) {
-  if (!user) {
-    return null;
-  }
-  return await userModel.findByPk(id);
+  return await userModel.findByPk(id) || null;
 }
 
-export async function updtateUser(id, values) {
+export async function updateUser(id, values) {
   const user = await getUserById(id);
   if (!user) {
     return null;
@@ -29,7 +26,7 @@ export async function deleteUser(id) {
   return await user.destroy()
 }
 
-export async function getAllusers() {
+export async function getAllUsers() {
   return await userModel.findAll();
 }
 

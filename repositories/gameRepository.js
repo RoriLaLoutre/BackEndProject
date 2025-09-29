@@ -6,13 +6,10 @@ export async function createGame({ gameName, gamesAgeLimit }) {
 }
 
 export async function getGameById(id) {
-  if (!game) {
-    return null;
-  }
-  return await gameModel.findByPk(id);
+  return await gameModel.findByPk(id) || null;
 }
 
-export async function updtateGame(id, values) {
+export async function updateGame(id, values) {
   const game = await getGameById(id);
   if (!game) {
     return null;

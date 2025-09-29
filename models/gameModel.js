@@ -5,7 +5,7 @@ const gameModel = sequelize.define("game", {
     game_id: {
         primaryKey: true,
         type: DataTypes.UUIDV4,
-        autoIncrement: true
+        defaultValue: DataTypes.UUIDV4, 
     },
     gameName: {
         type: DataTypes.STRING,

@@ -16,8 +16,8 @@ const dlcSchema = new mongoose.Schema({
 // Schéma principal
 const gameConfigSchema = new mongoose.Schema({
   idConfig: {
-    type: String, 
-    default: v4, 
+    type: String,
+    required: true, 
     unique: true,
     index: true,
   },
