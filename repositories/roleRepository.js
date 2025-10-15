@@ -1,15 +1,16 @@
 import roleModel from "../models/roleModel.js";
 
-export async function createRole({ roleName }) {
+export async function createRole({ roleName }) { //
   const role = await roleModel.create({ roleName });
   return role;
 }
 
-export async function getRoleById(id) {
+export async function getRoleById(id) { //
   return await roleModel.findByPk(id) || null
 }
 
-export async function updateRole(id, values) {
+
+export async function updateRole(id, values) {  //
   const role = await getRoleById(id);
   if (!role) {
     return null;
@@ -17,7 +18,7 @@ export async function updateRole(id, values) {
   return await role.update(values);
 }
 
-export async function deleteRole(id) {
+export async function deleteRole(id) { //
   const role = await getRoleById(id);
   if (!role) {
     return null;
@@ -26,7 +27,7 @@ export async function deleteRole(id) {
   return await role.destroy()
 }
 
-export async function getAllRoles() {
+export async function getAllRoles() {  //
   return await roleModel.findAll();
 }
 

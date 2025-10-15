@@ -1,15 +1,15 @@
 import gameModel from "../models/gameModel.js";
 
-export async function createGame({ gameName, gamesAgeLimit }) {
-  const game = await gameModel.create({ gameName, gamesAgeLimit });
+export async function createGame({ gameName, gameAgeLimit }) { //
+  const game = await gameModel.create({ gameName, gameAgeLimit });
   return game;
 }
 
-export async function getGameById(id) {
+export async function getGameById(id) {    //
   return await gameModel.findByPk(id) || null;
 }
 
-export async function updateGame(id, values) {
+export async function updateGame(id, values) {  //
   const game = await getGameById(id);
   if (!game) {
     return null;
@@ -17,7 +17,7 @@ export async function updateGame(id, values) {
   return await game.update(values);
 }
 
-export async function deleteGame(id) {
+export async function deleteGame(id) {  // 
   const game = await getGameById(id);
   if (!game) {
     return null;
@@ -26,7 +26,7 @@ export async function deleteGame(id) {
   return await game.destroy()
 }
 
-export async function getAllGames() {
+export async function getAllGames() { //
   return await gameModel.findAll();
 }
 

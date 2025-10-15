@@ -1,0 +1,4 @@
+export * as gameService from "./gameService.js"
+export * as userGameConfigService from "./userGameConfigService.js"
+export * as roleService from "./roleService.js"
+export * as userService from "./userService.js"

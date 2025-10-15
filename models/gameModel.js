@@ -12,7 +12,7 @@ const gameModel = sequelize.define("game", {
         allowNull: false,
         unique: true
     },
-    gamesAgeLimit:{
+    gameAgeLimit:{
         type:DataTypes.INTEGER,
         allowNull:false,
         unique:false,
