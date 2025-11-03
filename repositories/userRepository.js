@@ -9,6 +9,10 @@ export async function getUserById(id) {
   return await userModel.findByPk(id) || null;
 }
 
+export async function getUserByUsername(username) {
+  return await userModel.findOne({ where: { username } });
+}
+
 export async function updateUser(id, values) {
   const user = await getUserById(id);
   if (!user) {

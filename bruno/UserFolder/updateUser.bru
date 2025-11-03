@@ -1,0 +1,28 @@
+meta {
+  name: updateUser
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://127.0.0.1:3000/api/users/{{userId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "LevraiRori",
+    "password": "RoriLePluBo2toulétan",
+    "birthDate": "2003-08-03"
+  }
+}
+
+vars:pre-request {
+  userId: bdaaef84-9f9f-4cd3-ae0e-e414208cddb7
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

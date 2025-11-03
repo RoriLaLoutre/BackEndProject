@@ -17,3 +17,10 @@ export async function getUserRoles(userId) {
     },
   });
 }
+
+export async function removeRoleFromUser({ roleId, userId }) {
+  const deletedCount = await userRoleModel.destroy({
+    where: { idUser: userId, idRole: roleId },
+  });
+  return deletedCount > 0;
+}

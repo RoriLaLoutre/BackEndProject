@@ -1,0 +1,23 @@
+meta {
+  name: addGameToUser
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://127.0.0.1:3000/api/users/games
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "idUser":"fd9b1c66-2c2d-4e1b-a2b0-53e2e6eaf8dd",
+    "idGame":"9893caa6-5a28-4d5f-afe3-6b70c92dfa57"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

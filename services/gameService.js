@@ -1,10 +1,10 @@
-import gameRepository from "../repositories/indexRepository.js";
-import { GameError } from "../errors/index.error";
+import {gameRepository} from "../repositories/indexRepository.js";
+import { GameError } from "../errors/index.error.js";
 
 
 export async function createGame({ gameName, gameAgeLimit }) {
 
-    if (gameRepository.gameExists(gameName)){
+    if (await gameRepository.gameExists(gameName)){
         throw new GameError.ConflictError("Impossible de l'ajouter, le jeu existe déja.")
     }
     if (!gameName || gameName.length > 255){
@@ -13,7 +13,7 @@ export async function createGame({ gameName, gameAgeLimit }) {
 
     const game = await gameRepository.createGame({ gameName, gameAgeLimit });
 
-    return game.dataValues;
+    return game;
 }
 
 export async function getGameById(id) {
@@ -32,7 +32,7 @@ export async function getGameById(id) {
 
 
 export async function updateGame(id, { gameName, gameAgeLimit }) {
-    if (gameRepository.gameExists(gameName)){
+    if (await gameRepository.gameExists(gameName)){
         throw new GameError.ConflictError("Impossible de changer pour ce nom, celui-ci est déja pris")
     }
     if (!gameName || gameName.length > 255){
@@ -47,7 +47,7 @@ export async function updateGame(id, { gameName, gameAgeLimit }) {
     gameAgeLimit,
   });
 
-  return game.dataValues;
+  return game;
 }
 
 
@@ -56,7 +56,7 @@ export async function deleteGame(id){
         throw new GameError.NotFoundError("le jeu n'existe pas");
     }
 
-    return (await gameRepository.deleteGame(id)).dataValues;
+    return (await gameRepository.deleteGame(id));
 }
 
 export async function getAllGames(){

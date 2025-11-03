@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { v4 } from "uuid";
 
 // Schéma des DLC
 const dlcSchema = new mongoose.Schema({

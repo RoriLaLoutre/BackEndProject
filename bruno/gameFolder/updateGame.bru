@@ -1,0 +1,27 @@
+meta {
+  name: updateGame
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://127.0.0.1:3000/api/games/{{idGame}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "gameName": "Doom Eternal",
+    "gameAgeLimit": 13
+  }
+}
+
+vars:pre-request {
+  idGame: 9893caa6-5a28-4d5f-afe3-6b70c92dfa57
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,9 +1,8 @@
 import userGameConfigModel from "../models/userGameConfigModel.js"
 
 
-// cette table utilise Mongoose (mongoDB)
 
-export async function CreateUserGameConfig(data) {
+export async function createUserGameConfig(data) {
 
     const newConfig = await userGameConfigModel.create(data);
     return newConfig;
@@ -15,11 +14,10 @@ export async function getUserGameConfigById(id) {
 }
 
 export async function updateUserGameConfig(id, data) {
-    const result = await userGameConfigModel.updateOne(
-      { idConfig: id },
-      { $set: data }
+    return await userGameConfigModel.findOneAndUpdate(
+        { idConfig: id },
+        { $set: data },
     );
-    return result;
 }
 
 export async function deleteUserGameConfig(id) {

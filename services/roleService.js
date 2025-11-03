@@ -3,7 +3,7 @@ import { roleRepository } from "../repositories/indexRepository.js";
 
 export async function createRole({ roleName }) {
 
-    if (roleRepository.roleExists(roleName)){
+    if (await roleRepository.roleExists(roleName)){
         throw new RoleError.ConflictError("Impossible de créer ce role, le role existe déja.")
     }
     if (!roleName || roleName.length > 255){
@@ -12,7 +12,7 @@ export async function createRole({ roleName }) {
 
     const role = await roleRepository.createRole({ roleName });
 
-    return role.dataValues;
+    return role;
 }
 
 export async function getRoleById(id) {
@@ -29,7 +29,7 @@ export async function getRoleById(id) {
 }
 
 export async function updateRole(id, { roleName }) {
-    if (roleRepository.roleExists(roleName)){
+    if (await roleRepository.roleExists(roleName)){
         throw new RoleError.ConflictError("Impossible de changer pour ce nom, celui-ci est déja pris")
     }
     if (!roleName || roleName.length > 255){
@@ -40,7 +40,7 @@ export async function updateRole(id, { roleName }) {
     roleName,
   });
 
-  return role.dataValues;
+  return role;
 }
 
 export async function deleteRole(id){

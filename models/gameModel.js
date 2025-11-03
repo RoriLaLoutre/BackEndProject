@@ -1,10 +1,10 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db";
+import { sequelize } from "../config/db.js";
 
 const gameModel = sequelize.define("game", {
     game_id: {
         primaryKey: true,
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4, 
     },
     gameName: {

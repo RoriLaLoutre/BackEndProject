@@ -1,0 +1,25 @@
+meta {
+  name: register
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:3000/api/auth/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "rori",
+    "password": "superSecret123",
+    "birthDate": "2003-08-03"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,8 +1,8 @@
-import gameModel from "./gameModel";
-import roleModel from "./roleModel";
-import userModel from "./userModel";
-import userGameModel from "./userGameModel";
-import userRoleModel from "./userRoleModel";
+import gameModel from "./gameModel.js";
+import roleModel from "./roleModel.js";
+import userModel from "./userModel.js";
+import userGameModel from "./userGameModel.js";
+import userRoleModel from "./userRoleModel.js";
 const associate = () => {
   
   roleModel.belongsToMany(userModel, {

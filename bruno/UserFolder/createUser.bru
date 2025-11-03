@@ -1,0 +1,25 @@
+meta {
+  name: createUser
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:3000/api/users/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "leUserQuiDoiDisparaitr",
+    "password": "RoriLePlusBo",
+    "birthDate": "2003-08-03"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
